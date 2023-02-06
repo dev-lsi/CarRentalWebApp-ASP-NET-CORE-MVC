@@ -6,6 +6,7 @@
     public class Car
     { 
         public int Id { get; set; }
+        
         [Required]
         [MaxLength(BrandNameMaxLength)]
         public string Brand { get; set; }

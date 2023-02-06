@@ -1,12 +1,8 @@
-﻿using CarRental.Data.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CarRental.Data
+﻿namespace CarRental.Data
 {
+    using CarRental.Data.Models;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore;
     public class CarRentalDbContext : IdentityDbContext
     {
         public CarRentalDbContext(DbContextOptions<CarRentalDbContext> options)
@@ -16,5 +12,16 @@ namespace CarRental.Data
 
         public DbSet<Car> Cars { get; set; }
         public DbSet<Category> Categories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Car>()
+                .HasOne(c=>c.Category)
+                .WithMany(c=>c.Cars)
+                .HasForeignKey(c=>c.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            base.OnModelCreating(builder);
+        }
     }
 }
