@@ -8,35 +8,47 @@
     <div class="row">
         <div class="offset-2 col-6 col-sm-8">
             <h2 class="heading-margin">Add car</h2>
-            <form method="post">
+            <form method="post" style="line-height:8px">
                   <div class="form-group">
                       <label asp-for="Brand"></label>
                       <input asp-for="Brand" class="form-control"  placeholder="input the brand...">
+                      <span  asp-validation-for="Brand" class="small text-danger"></span>
                   </div>
                   <div class="form-group">
                       <label asp-for="Model"></label>
                       <input asp-for="Model" class="form-control"  placeholder="input the model...">
+                    <span asp-validation-for="Model" class="small text-danger"></span>
+
                   </div>
                   <div class="form-group">
                       <label asp-for="Description"></label>
                       <textarea asp-for="Description" rows="3" class="form-control" placeholder="description here..."></textarea>
+                    <span asp-validation-for="Description" class="small text-danger"></span>
+
                   </div>
                   <div class="form-group">
                       <label asp-for="ImageUrl">Image Url</label>
                       <input asp-for="ImageUrl" class="form-control" placeholder="input the image url...">
+                    <span asp-validation-for="ImageUrl" class="small text-danger"></span>
+
                   </div>
                   <div class="form-group">
                       <label asp-for="Year"></label>
                       <input asp-for="Year" class="form-control" placeholder="@DateTime.UtcNow.Year">
+                    <span asp-validation-for="Year" class="small text-danger"></span>
                   </div>
              
                   <div class="form-group">
                       <label asp-for="CategoryId"></label>
                       <select asp-for="CategoryId" class="form-control">
-                        @foreach(var category in Model.Categories)
-                        {
-                            <option value="@category.Id">@category.Name</option>
-                        }
+                        <option value="0">select category...</option>
+                        <option value="1">Mini</option>
+                        <option value="2">Economy</option>
+                        <option value="3">Midsize</option>
+                        <option value="4">Large</option>
+                        <option value="5">SUV</option>
+                        <option value="6">Vans</option>
+                        <option value="7">Luxury</option>
                       </select>
                   </div>
                   

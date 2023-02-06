@@ -22,16 +22,23 @@ namespace CarRental.Controllers
         [HttpPost]
         public IActionResult Add(AddCarrFormModel car)
         {
-          return View(car);
+            if (!ModelState.IsValid)
+            {
+                car.Categories = this.GetCarCategories();
+                return View(car);
+            }
+          
+            return RedirectToAction("Index","Home");
         }
 
         private IEnumerable<CarCategoryViewModel> GetCarCategories()
             => this.data
             .Categories
-            .Select(c => new CarCategoryViewModel 
-            { 
+            .Select(c => new CarCategoryViewModel
+            {
+
+                Id = c.Id,
                 Name = c.Name,
-                Id= c.Id
             })
             .ToList();
 
