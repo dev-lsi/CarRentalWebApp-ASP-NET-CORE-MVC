@@ -15,17 +15,18 @@ namespace CarRental.InfraStructure
         {
             //app.ApplicationServices.GetService<CarRentalDbContext>();
             var scopedServices=app.ApplicationServices.CreateScope();
-           var data= scopedServices.ServiceProvider.GetService<CarRentalDbContext>();
-            data.Database.Migrate();
-            
+            var data = scopedServices.ServiceProvider.GetService<CarRentalDbContext>();
+             data.Database.Migrate();
+
             SeedCategories(data);
             
+
             return app;
         }
 
         private static void SeedCategories(CarRentalDbContext data) 
         {
-            if (!data.Categories.Any())
+            if (data.Categories.Any())
             {
                 return ;
             }
@@ -41,6 +42,7 @@ namespace CarRental.InfraStructure
                 new Category {Name="Luxure"},
 
             });
+            data.SaveChanges();
 
         }
 

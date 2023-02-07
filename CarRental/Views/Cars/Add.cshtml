@@ -8,7 +8,8 @@
     <div class="row">
         <div class="offset-2 col-6 col-sm-8">
             <h2 class="heading-margin">Add car</h2>
-            <form method="post" style="line-height:8px">
+            
+            <form method="post" enctype="multipart/form-data">
                   <div class="form-group">
                       <label asp-for="Brand"></label>
                       <input asp-for="Brand" class="form-control"  placeholder="input the brand...">
@@ -41,16 +42,14 @@
                   <div class="form-group">
                       <label asp-for="CategoryId"></label>
                       <select asp-for="CategoryId" class="form-control">
-                        <option value="0">select category...</option>
-                        <option value="1">Mini</option>
-                        <option value="2">Economy</option>
-                        <option value="3">Midsize</option>
-                        <option value="4">Large</option>
-                        <option value="5">SUV</option>
-                        <option value="6">Vans</option>
-                        <option value="7">Luxury</option>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value=@category.Id>@category.Name</option>
+                        }
+                          
                       </select>
                   </div>
+                  <input type="file" name="image"/>
                   
                   <input class="btn btn-primary" type="submit" value="Save" />
     
