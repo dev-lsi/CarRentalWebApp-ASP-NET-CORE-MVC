@@ -1,0 +1,25 @@
+﻿@model  IEnumerable< CarListingViewModel>
+
+
+    <div class="row">
+        <h1>All Cars</h1>
+         @foreach (var car in Model)
+        {
+        <div class=raw>
+            <div class="col-6">
+                 <img src="@car.ImgUrl" 
+                       class="card-img-top" 
+                       alt="@car.Brand,@car.Brand - @car.Category,@car.Year">
+                 <div class="card-body">
+                       <h5 class="card-title text-center">@car.Brand @car.Model @car.Category (@car.Year)</h5>
+                       <a asp-controller="Car" 
+                          asp-action="Details" 
+                          asp-route-id ="@car.Id" 
+                          class="btn btn-primary">Details</a>
+                 </div>
+            </div>
+        </div>
+
+    }
+
+    </div>

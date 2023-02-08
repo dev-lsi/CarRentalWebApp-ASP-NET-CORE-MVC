@@ -4,7 +4,6 @@ namespace CarRental.Models.Cars
 {
 
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
 
     using static CarRental.Data.DataConstants;

@@ -3,10 +3,9 @@ using CarRental.Data.Models;
 using CarRental.Models.Cars;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using FileSystem=System.IO.File;
 
 namespace CarRental.Controllers
 {
@@ -17,6 +16,25 @@ namespace CarRental.Controllers
         public CarsController(CarRentalDbContext data)
             =>this.data = data;
 
+        public IActionResult All()
+        {
+            var cars=this.data
+                .Cars
+                .OrderByDescending(x => x.Id)
+                .Select(x=> new CarListingViewModel
+                {
+                Id= x.Id,
+                Brand=x.Brand,
+                Model=x.Model,
+                ImgUrl=x.ImageUrl,
+                Category=x.Category.Name,
+                Year=x.Year,
+                })
+                .ToList();
+
+             return View(cars);
+        }
+
         public IActionResult Add() => View(new AddCarrFormModel
         {
             Categories = this.GetCarCategories()
@@ -25,16 +43,20 @@ namespace CarRental.Controllers
         [HttpPost]
         public IActionResult Add(AddCarrFormModel car, IFormFile image)
         {
+            
+
+            
+
             if (this.data.Categories.Any(c=>c.Id==car.CategoryId))
             {
                 this.ModelState.AddModelError(nameof(car.CategoryId), "Category does not exist");
             }
 
-            if (!ModelState.IsValid)
-            {
-                car.Categories = this.GetCarCategories();
-                return View(car);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    car.Categories = this.GetCarCategories();
+            //    return View(car);
+            //}
 
             var carData = new Car
             {
@@ -47,9 +69,10 @@ namespace CarRental.Controllers
             };
 
             this.data.Cars.Add(carData);
+            
             this.data.SaveChanges();
-          
-            return RedirectToAction("Index","Home");
+
+            return RedirectToAction(nameof(All));
         }
 
         private IEnumerable<CarCategoryViewModel> GetCarCategories()
@@ -57,7 +80,6 @@ namespace CarRental.Controllers
             .Categories
             .Select(c => new CarCategoryViewModel
             {
-
                 Id = c.Id,
                 Name = c.Name,
             })
