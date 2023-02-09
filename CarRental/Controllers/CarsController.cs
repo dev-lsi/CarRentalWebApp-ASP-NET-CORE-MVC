@@ -16,11 +16,39 @@ namespace CarRental.Controllers
         public CarsController(CarRentalDbContext data)
             =>this.data = data;
 
-        public IActionResult All()
+        public IActionResult All([FromQuery]CarQueryModel query)
         {
-            var cars=this.data
-                .Cars
-                .OrderByDescending(x => x.Id)
+            var carsQuery = this.data.Cars.AsQueryable();
+            
+            if (!string.IsNullOrEmpty(query.Brand))
+            {
+                carsQuery = carsQuery
+                    .Where(x => x.Brand == query.Brand);
+                    
+            }
+
+
+            if (!string.IsNullOrEmpty(query.SearchTerm))
+            {
+                carsQuery = carsQuery.Where(x =>
+                x.Brand.ToLower().Contains(query.SearchTerm.ToLower())||
+                x.Model.ToLower().Contains(query.SearchTerm.ToLower())||
+                x.Description.ToLower().Contains(query.SearchTerm.ToLower())
+                );
+            }
+
+            carsQuery = query.Sorting switch
+            {
+                CarSorting.DateCreated => carsQuery.OrderByDescending(x => x.Id),
+                CarSorting.BrandModel => carsQuery.OrderByDescending(x => x.Brand),
+                CarSorting.Year or _ => carsQuery.OrderByDescending(x => x.Year),
+
+            };
+
+            var cars = carsQuery
+                .Skip((query.CurrentPage - 1) * CarQueryModel.CarsPerPage)
+                .Take(CarQueryModel.CarsPerPage)
+                //.OrderByDescending(x => x.Id)
                 .Select(x=> new CarListingViewModel
                 {
                 Id= x.Id,
@@ -32,7 +60,23 @@ namespace CarRental.Controllers
                 })
                 .ToList();
 
-             return View(cars);
+            
+
+            var carBrands=this.data
+                .Cars
+                .Select(c=>c.Brand)
+                .Distinct()
+                .OrderBy(c=>c)
+                .ToList();
+            
+            
+
+            query.Brands= carBrands;
+            query.Cars = cars;
+
+            
+
+            return View(query);
         }
 
         public IActionResult Add() => View(new AddCarrFormModel
@@ -84,6 +128,7 @@ namespace CarRental.Controllers
                 Name = c.Name,
             })
             .ToList();
+        
 
 
     }
